@@ -7,12 +7,12 @@
 </svelte:head>
 
 <div class="row">
-    <div class="cell d-none d-block-md image pt-5">
+    <div class="col d-none d-block-md image pt-5">
         <div class="mt-5 pt-5 pl-4">
             <h2 style="margin-top:40px" class="mt-4">Save Invest and Earn</h2>
         </div>
     </div>
-    <div class="cell">
+    <div class="col">
         <div class="container">
             <div class="top">
                 <img src="images/safe.png" class="logo" alt="" srcset="" />
