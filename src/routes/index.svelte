@@ -60,7 +60,7 @@
                   <ion-icon class="icon" name="wallet-outline" />
                 </div>
                 <div class="col-9">
-                  <p class="text-sm fg-white">Daily Contribution Balance</p>
+                  <p class="text-sm fg-white">Thrift Balance</p>
                   <p
                     style="font-weight: 700;"
                     class=" fg-white bold-text text-light"
@@ -162,14 +162,14 @@
   }
   .daily {
     background-color: rgb(121, 19, 229);
-    background-image: url(/static/media/bg-pattern.8efb1209.png);
+    background-image: url(/images/dashboard/bg-1.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: right center;
   }
   .investment {
     background-color: green;
-    background-image: url(/static/media/bg-2.png);
+    background-image: url(/images/dashboard/bg-1.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: right center;

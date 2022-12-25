@@ -1,16 +1,18 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import BottomNav from "../../Components/BottomNav.svelte";
 import TopNav from "../../Components/TopNav.svelte";
   import { Epage } from "../../properties/shared";
   const name = "Thrifts";
   const page = Epage.CONTRIBUTION;
 
+
 </script>
 <TopNav {name}/>
 <BottomNav {page}></BottomNav>
-<div class="container-fluid mt-4">
+<div  class="container-fluid mt-4 pb-5">
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 col-sm-6">
             <div class="card">
                 <div class="card__content mt-4 ml-2 mr-2 text-center">
                     <div>
@@ -26,7 +28,7 @@ import TopNav from "../../Components/TopNav.svelte";
                 </div>
               </div>
         </div>
-        <div class="col-12">
+        <div class="col-12 col-sm-6">
             <div class="card">
                 <div class="card__content mt-4 ml-2 mr-2 text-center">
                     <div>
