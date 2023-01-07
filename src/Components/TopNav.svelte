@@ -1,5 +1,5 @@
 <script>
-  import { on } from "events";
+  
   import { onMount } from "svelte";
   import { getOS } from "../properties/client";
 

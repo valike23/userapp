@@ -1,3 +1,4 @@
+import {goto} from "@sapper/app";
 export function getOS (){
     let nav = navigator.userAgent;
     console.log(nav);
@@ -28,4 +29,17 @@ export function osName (): Eos{
    if(os.includes('Window')) return Eos.WINDOWS;
    return Eos.NONE
 
+}
+export const handleNotification = (message: string, win: any, type: string, title: string,
+     image: string = '', func: any = () => { }) => {
+    console.log(type);
+    win.iziToast[type]({
+        title,
+        message,
+        position: 'topRight',
+        image,
+        onClosed: func
+    })
+
+    return func || 0
 }

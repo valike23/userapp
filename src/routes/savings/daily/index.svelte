@@ -19,7 +19,7 @@
 </script>
 <TopNav {name}></TopNav>
 <BottomNav {page} />
-<div class="container-fluid pb-5">
+<div class="container-fluid pb-5 ">
   <div class="row mb-4">
     <div class="col-12">
       <div class="card daily">
@@ -44,6 +44,21 @@
   </div>
   
   <div id="calendar" />
+
+  <h3 class="title">Transcations</h3>
+  <ul class="list mb-5">
+    <li class="list-item">
+      <div class="list-item__center">
+        <div class="list-item__title">
+          Title
+        </div>
+        <div class="list-item__subtitle">
+          Subtitle
+        </div>
+      </div>
+    </li>
+  </ul>
+
 </div>
 
 
@@ -59,5 +74,8 @@
   .amount{
     font-family: 'Concert One';
     font-size: 30px;
+  }
+  .title {
+    font-size: 0.825rem;
   }
 </style>

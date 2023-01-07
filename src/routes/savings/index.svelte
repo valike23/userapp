@@ -23,7 +23,7 @@ import TopNav from "../../Components/TopNav.svelte";
                     <p class="title">Daily Thrift</p>
                     <p><small>save every day with us</small></p>
 
-                    <p><a href="/savings/daily">tap to view</a></p>
+                    <p><a href="/savings/daily/all">tap to view</a></p>
 
                 </div>
               </div>
