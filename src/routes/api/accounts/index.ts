@@ -5,7 +5,7 @@ import superagent from "superagent";
 export async function put(req, res){
     try {
         let body = req.body;
-        console.log('body data here:',body);
+        console.log('body data here:',body, 'base url is', BASE_URL);
         try {
             const resd = await superagent.put(BASE_URL + "/accounts/login").send(body) as unknown as any;
             console.log(resd._body);
