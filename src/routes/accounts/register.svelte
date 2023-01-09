@@ -1,8 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import type { Iuser } from "../../Model/accounts";
   import { getOS } from "../../properties/client";
-
-  const submit = () => {};
+let user:Iuser = {};
+let confirm ='';
+let loading = false;
+  const submit = () => {
+    if(confirm && confirm == user.password) {
+      
+    }
+  };
 
   let os = "";
   onMount(() => {
@@ -17,16 +24,16 @@
 <main>
   <div class="login-page">
     <div class="form">
-      <form class="register-form">
+      <form on:submit|preventDefault={submit} class="register-form">
         <div class="text-center">
           <img src="images/safesave-logo/cover.png" alt="">
         </div>
-        <input minlength="8" required type="text" placeholder="full name"/>
-        <input required type="email" placeholder="email address"/>
-        <input required type="tel" placeholder="phone number"/>
+        <input bind:value={user.full_name} minlength="8" required type="text" placeholder="full name"/>
+        <input bind:value={user.email} required type="email" placeholder="email address"/>
+        <input bind:value={user.phone} required type="tel" placeholder="phone number"/>
         
-        <input required type="password" placeholder="password"/>
-        <input required type="password" placeholder="confirm password"/>
+        <input bind:value={user.password} required type="password" placeholder="password"/>
+        <input bind:value={confirm} required type="password" placeholder="confirm password"/>
         <button type="submit">create</button>
         <p class="message">Already registered? <a href="accounts/login">Sign In</a></p>
       </form>
