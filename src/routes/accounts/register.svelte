@@ -1,20 +1,39 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import axios from "axios";
   import type { Iuser } from "../../Model/accounts";
-  import { getOS } from "../../properties/client";
+  import { handleNotification } from "../../properties/client";
+  import {goto} from "@sapper/app";
 let user:Iuser = {};
 let confirm ='';
-let loading = false;
-  const submit = () => {
-    if(confirm && confirm == user.password) {
-      
-    }
+let loading = true;
+  const submit = async () => {
+    if(confirm != user.password) return handleNotification('your password must match your confirm password',
+      window, 'error','error');
+    const splitAry = user.full_name.split(" ");
+      if(splitAry.length != 2)  return handleNotification('your full name should have both your first name and lastname only',
+      window, 'error','error');
+      user.first_name = splitAry[0];
+      user.last_name = splitAry[1];
+      loading = false;
+      try {
+       const resp = await axios.post('api/accounts', user);
+       if(resp){
+        console.log(resp);
+        handleNotification('accounts have been created successfully, check your mail to complete registration',
+        window,'success','ok');
+        goto("accounts/confirm_email?email=" +  user.email);
+        loading = true;
+        user ={};
+        confirm = '';
+       }
+      } catch (error) {
+        handleNotification('email or phone already exist', window, 'error', 'error');
+        loading = true;
+        
+      }
   };
 
-  let os = "";
-  onMount(() => {
-    os = getOS();
-  });
+
 </script>
 
 <svelte:head>
@@ -34,7 +53,11 @@ let loading = false;
         
         <input bind:value={user.password} required type="password" placeholder="password"/>
         <input bind:value={confirm} required type="password" placeholder="confirm password"/>
-        <button type="submit">create</button>
+       {#if loading}
+       <button type="submit">create</button>
+       {:else}
+       <button disabled type="submit">creating...</button>
+       {/if}
         <p class="message">Already registered? <a href="accounts/login">Sign In</a></p>
       </form>
      

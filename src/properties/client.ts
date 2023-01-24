@@ -1,4 +1,4 @@
-import {goto} from "@sapper/app";
+
 export function getOS (){
     let nav = navigator.userAgent;
     console.log(nav);

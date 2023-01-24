@@ -14,8 +14,19 @@ export enum EtranscationStatus {
     SUCCESS = 'success',
     DECLINED = 'declined'
 }
-export enum EgatewayType {
-    ADD_CARD = 'add card'
+  export enum EgatewayType {
+    ADD_CARD = 'add card',
+    THRIFT_PAYMENT = "THRIFT_PAYMENT"
+  }
+  export interface IthriftTranscation{
+    agentId?: number;
+    clientId?: number;
+    amountPaid?: number;
+    thriftId?: number;
+    createdAt?:Date,
+    updateAt?: Date,
+    resolved?: number;
+    paymentRef?: string;
 }
 export interface IgatewayTranscation {
     _id?: any;

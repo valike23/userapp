@@ -1,16 +1,45 @@
+
+<script context="module">
+	export async function preload(page, session) {
+	let mysession ={};
+  let thrifts = [];
+try {
+  
+  const res = await this.fetch(`api/accounts`);
+  const res2 = await this.fetch(`api/thrift/daily`);
+  const data = await res2.json();
+  thrifts = data.body;
+  if(thrifts == undefined) thrifts = [];
+		 mysession = await res.json();
+} catch (error) {
+  console.log(error);
+  mysession ={};
+  thrifts = [];
+}
+
+		return { mysession , thrifts};
+	}
+</script>
 <script lang="ts">
   import BottomNav from "../../../Components/BottomNav.svelte";
   import Fab from "../../../Components/FAB.svelte";
   import LinkButton from "../../../Components/LinkButton.svelte";
   import TopNav from "../../../Components/TopNav.svelte";
   import { Epage } from "../../../properties/shared";
-  const name = "all Thrifts";
-  const page = Epage.CONTRIBUTION;
-  let activeScreen = "all";
+  import {goto} from "@sapper/app";
+  import { getMonths } from "../../../Model/public";
 
-  const switchScreen = (screen) => {
-    activeScreen = screen;
-  };
+
+  const name = "all Thrifts";
+  export let thrifts, mysession;
+  console.log(thrifts, mysession);
+  const page = Epage.CONTRIBUTION;
+  try {
+    if (mysession.status == "failed") goto("accounts/login");
+  } catch (error) {
+    console.log(error);
+  }
+ 
 </script>
 
 <svelte:head>
@@ -22,60 +51,34 @@
 
 <div class="container-fluid pb-5">
   <h3>All Daily Thrift</h3>
-  <div class="text-center">
-    <button
-      on:click={() => {
-        switchScreen("all");
-      }}
-      class:bg-blue={activeScreen == "all"}
-      class="btn btn-sm pl-2 pr-2 ml-2 mr-2">all</button
-    >
 
-    <button
-      on:click={() => {
-        switchScreen("active");
-      }}
-      class:bg-blue={activeScreen == "active"}
-      class="btn btn-sm ml-2 mr-2">active</button
-    >
 
-    <button
-      on:click={() => {
-        switchScreen("closed");
-      }}
-      class:bg-blue={activeScreen == "closed"}
-      class="btn btn-sm ml-2 mr-2">closed</button
-    >
+
+  <div class="row mt-2">
+  
+     {#each thrifts as thrift}
+     <div class="col-12 col-sm-6 ">
+      <div class="card">
+          <div class="card__content">
+              <p><small>{getMonths[thrift.month]}, {thrift.year}</small></p>
+              <p> ₦{thrift.thrift_amount}</p>
+              <p>
+                {#if (new Date().getMonth()) == thrift.month}
+                <small class="fg-green">ongoing</small>
+                {:else}
+                <small class="fg-red">finished</small>
+                {/if}
+              </p>
+              <div class="text-center">
+                  <LinkButton color="bg-blue fg-white" link="{'savings/daily?id=' + thrift.id}" text="view"></LinkButton>
+              </div>
+          </div>
+      </div>
+     
   </div>
-
-
-  <div class="row">
-    <div class="col-12 col-sm-6 ">
-        <div class="card">
-            <div class="card__content">
-                <p><small>December, 2022</small></p>
-                <p>₦5,000</p>
-                <p><small class="fg-green">finished</small></p>
-                <div class="text-center">
-                    <LinkButton color="bg-blue fg-white" link="savings/daily" text="view"></LinkButton>
-                </div>
-            </div>
-        </div>
-       
-    </div>
-    <div class="col-12 col-sm-6 ">
-        <div class="card">
-            <div class="card__content">
-                <p><small>December, 2022</small></p>
-                <p>₦5,000</p>
-                <p><small class="fg-green">finished</small></p>
-                <div class="text-center">
-                    <LinkButton color="bg-blue fg-white" link="savings/daily" text="view"></LinkButton>
-                </div>
-            </div>
-        </div>
-       
-    </div>
+     {/each}
+  
+  
   </div>
 </div>
 

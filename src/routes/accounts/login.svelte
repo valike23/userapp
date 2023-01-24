@@ -9,6 +9,7 @@
   const submit = async () => {
     try {
       disabled = true;
+      console.log(user);
       const resp = await axios.put("api/accounts", user) as unknown as any;
       console.log(resp);
       sessionStorage.setItem('safesave_users', JSON.stringify(resp.data.respBody));
@@ -17,8 +18,9 @@
       disabled = false;
       goto("/");
     } catch (error) {
+      console.log(error);
       handleNotification(
-        error.response.data.response.text,
+        'something went wrong',
         window,
         "error",
         "error"

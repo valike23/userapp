@@ -1,27 +1,55 @@
+
+<script context="module">
+	export async function preload(page, session) {
+	let client ={};
+try {
+  
+  const res = await this.fetch(`api/dashboard`);
+		 client = await res.json();
+} catch (error) {
+  console.log(error);
+  client ={};
+}
+
+		return { client };
+	}
+</script>
+
 <script lang="ts">
   import { onMount } from "svelte";
   import BottomNav from "../Components/BottomNav.svelte";
   import { Epage } from "../properties/shared";
   import { goto } from "@sapper/app";
-  import Loader from "../Components/Loader.svelte";
   import type { Iuser } from "../Model/accounts";
   import type { IgatewayTranscation } from "./api/transcation/gateway";
   let win: any = {};
-  let screen = false;
-  let user: Iuser = {};
+  export let client: Iuser;
+  let screen = true;
+  try {
+    
+  if(!client.id) goto('accounts/login');
+  } catch (error) {
+    client.client = {wallet: 0}
+    console.log(error);
+    screen = false;
+  }
+ const verifyEmail =()=>{
+
+ }
   const logout = () => {
     goto("accounts/login");
   };
   onMount(() => {
-    win = window;
-    if(sessionStorage.getItem("safesave_token")){
-      screen = true;
-      user = JSON.parse(sessionStorage.getItem("safesave_users"));
+    if(!screen) location.href = "accounts/login";
     
-    }
-    else{
-      goto('accounts/login');
-    }
+    win = window;
+    // if(sessionStorage.getItem("safesave_token")){
+    //   user = JSON.parse(sessionStorage.getItem("safesave_users"));
+    
+    // }
+    // else{
+    //   goto('accounts/login');
+    // }
     const splide = new win.Splide(".splide", {
       type: "loop",
       perPage: 1,
@@ -40,7 +68,7 @@
     if (res) {
       const paystack = new win.PaystackPop();
       paystack.newTransaction({
-        key: user.email,
+        key: client.email,
         amount: 50 * 100,
         channel: "card",
 
@@ -59,7 +87,7 @@
 <div class="container-fluid" style="overflow-y: scroll;">
   <header class="row mt-4">
     <div class="col-7">
-      <span class="h1-header mr-4">{user.first_name || ''}</span>
+      <span class="h1-header mr-4">{client.first_name || ''}</span>
       <span id="dropdown_toggle_1" class="material-icons">
         account_circle
       </span>
@@ -125,7 +153,7 @@
                     style="font-weight: 700;"
                     class=" fg-white bold-text text-light"
                   >
-                    ₦5,000
+                    ₦{client.client.wallet}
                   </p>
                 </div>
               </div>
@@ -145,7 +173,7 @@
                     style="font-weight: 700;"
                     class=" fg-white bold-text text-light"
                   >
-                    ₦5,000
+                    ₦{client.client.thrift_balance}
                   </p>
                 </div>
               </div>
@@ -165,7 +193,7 @@
                     style="font-weight: 700;"
                     class=" fg-white bold-text text-light"
                   >
-                    ₦5,000
+                    ₦{client.client.investment_balance}
                   </p>
                 </div>
               </div>
@@ -228,6 +256,22 @@
         </div>
       </div>
     </div>
+   {#if !client.email_verified}
+   <div class="card">
+    <div
+      on:click={verifyEmail}
+      on:keypress={verifyEmail}
+      class="card_content row"
+    >
+      <div class="col-2">
+        <span class="material-icons"> radio_button_unchecked </span>
+      </div>
+      <div class="col-10">
+        <strong class="mb-3 mr-2">verify email address</strong>
+      </div>
+    </div>
+  </div>
+   {/if}
   </section>
 </div>
 
