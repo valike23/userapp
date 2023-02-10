@@ -216,7 +216,7 @@ try {
       <div class="col-6 col-md-3">
         <div class="card fg-white bg-blue">
           <span class="material-icons "> monetization_on </span> <br />
-          <p><strong>Investment Plans</strong></p>
+          <p><strong>Investment</strong></p>
         </div>
       </div>
       <div class="col-6 col-md-3">

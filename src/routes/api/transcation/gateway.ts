@@ -44,6 +44,16 @@ export interface IgatewayTranscation {
 }
 
 
+export interface IcontributionTranscation{
+    agentId?: number;
+    clientId?: number;
+    amountPaid?: number;
+    contributionId?: number;
+    createdAt?:Date,
+    updateAt?: Date,
+    resolved?: number;
+    paymentRef?: string;
+}
 export async function post (req, res){
     try {
         let body = req.body;

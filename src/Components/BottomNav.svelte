@@ -49,7 +49,7 @@ console.log(os);
           account_balance_wallet
           </span>
       </i>
-      <div class="tabbar__label">Investments</div>
+      <div class="tabbar__label">wallet</div>
     </button>
   </label>
 </div>
@@ -82,7 +82,7 @@ console.log(os);
       <span  class="material-icons tabbar__icon tabbar--material__icon fg-white">
         paid
         </span>
-      <div class="tabbar__label tabbar--material__label fg-white">Investments</div>
+      <div class="tabbar__label tabbar--material__label fg-white">wallet</div>
     </button>
   </label>
 </div>

@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import type { Iuser } from "../../Model/accounts";
   import axios from "axios";
-  import { getOS, handleNotification } from "../../properties/client";
+  import { generateToken, getOS, handleNotification, setToken, uploadToken } from "../../properties/client";
   import { goto } from "@sapper/app";
   let disabled = false;
   let user: Iuser = {};
@@ -12,8 +12,20 @@
       console.log(user);
       const resp = await axios.put("api/accounts", user) as unknown as any;
       console.log(resp);
+      if(resp.data.respBody.type !=  "client") return handleNotification('you are not permitted to use this site',
+      window, 'error', 'error');
       sessionStorage.setItem('safesave_users', JSON.stringify(resp.data.respBody));
       sessionStorage.setItem('safesave_token', resp.data.token);
+      if(resp.data.respBody.pushToken){
+        //set the token
+      }
+      else{
+        //generate the token and upload then set the token
+        setToken();
+       let token = await generateToken(window);
+       console.log('token', token);
+        let upload = await  uploadToken(token);
+      }
       handleNotification("success", window, "success", "ok");
       disabled = false;
       goto("/");
@@ -33,6 +45,8 @@
   let os = "";
   onMount(() => {
     os = getOS();
+    console.log(window);
+    
   });
 </script>
 

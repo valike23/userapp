@@ -5,9 +5,10 @@ import * as sapper from '@sapper/server';
 var session = require('express-session');
 import {json, urlencoded} from "body-parser";
 var MemoryStore = require('memorystore')(session);
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV , SAFESAVE_PERCENTAGE} = process.env;
 const dev = NODE_ENV === 'development';
 
+console.log('current savesafe percentage',SAFESAVE_PERCENTAGE);
 express() // You can also use Express
 	.use(
 		session({

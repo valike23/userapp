@@ -4,7 +4,7 @@
     let thrift = { transcations: [] };
     try {
       const res = await this.fetch(`api/accounts`);
-      const res2 = await this.fetch(`api/thrift/daily?id=${page.query.id}`, {
+      const res2 = await this.fetch(`api/thrift/targeted?id=${page.query.id}`, {
         method: "PUT",
       });
       const data = await res2.json();
@@ -44,13 +44,26 @@
   let cal: any = {};
   let os: Eos | string = "";
   export let thrift, mysession;
-  console.log(mysession);
+  let duration: any = {};
+  console.log(thrift);
   try {
     if (mysession.status == "failed") goto("accounts/login");
   } catch (error) {
     console.log(error);
   }
   let payAmount = thrift.thrift_amount;
+
+  const retrieve_Duration = async () => {
+    try {
+      let dur = await axios.get(
+        `api/thrift/targeted/duration?id=${thrift.targetted_durationId}`
+      );
+      duration = dur.data;
+      console.log("duration is weird", dur);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const pay = () => {
     let data = document.getElementById("payAmount");
     const input = win.Metro.getPlugin(data, "spinner");
@@ -75,28 +88,28 @@
           status: transaction.status,
           amount: pay_amount,
         };
-        const count = pay_amount / thrift.thrift_amount;
-        const trnasList = [];
         const thrift_tran: IthriftTranscation = {
           clientId: mysession.user.id,
-          amountPaid: thrift.thrift_amount,
+          amountPaid: pay_amount,
           thriftId: thrift.id,
           paymentRef: transaction.reference,
           resolved: transaction.status == "success" ? 1 : 0,
         };
-        for (let index = 0; index < count; index++) {
-          trnasList.push(thrift_tran);
-        }
+       
         handleNotification(
-          "submitting transcations",
+          "submitting transcation",
           window,
           "info",
           "loading..."
         );
         try {
-          const resp = await axios.post("api/thrift/daily/transcation", {
-            trans,
-            trnasList,
+          console.log({
+            thrift_tran,
+            trans
+          });
+          const resp = await axios.post("api/thrift/targeted/transcation", {
+            thrift_tran,
+            trans
           });
 
           if (resp.data) {
@@ -115,10 +128,43 @@
       },
     });
   };
+
+  const reload =async ()=>{
+    handleNotification('reloading data... ', win, 'info','loading...');
+    const resp = await axios.put(`api/thrift/targeted?id=${thrift.id}`);
+    console.log(resp.data);
+    const data = resp.data;
+    if(data.body){
+      thrift = data.body;
+      thrift.transcations = thrift.transcations;
+
+      handleNotification('data reloaded!', win, 'success', 'ok');
+    }
+
+  }
+
+  const endThrift = async () => {
+    const resp = await win.ons.notification
+      .confirm(`Are you sure you want to end this thrift,
+    ending this thrift at the moment will enquire a cost of ${duration.over_charges  * thrift.wallet /100}`);
+    console.log(resp);
+    if(resp){
+        handleNotification('your thrift is being proceed, your saved amount will be transferred to your wallet',
+         window,'info', '');
+
+         try {
+        const resp = await  axios.put('api/thrift/targeted/transcation', thrift);
+        handleNotification('cash has been transferred to your safesave wallet', win, 'success', 'Ok');
+         } catch (error) {
+          console.log(error);
+          handleNotification('something went wrong', window, 'error', 'error');
+         }
+    }
+  };
   const dayClick = (e) => {
     console.log(e);
   };
-  let name = "Daily Thrift";
+  let name = "Targetted Thrift";
   const openModal = () => {
     payCharm = win.Metro.charms.open("#pay");
   };
@@ -126,7 +172,7 @@
   onMount(() => {
     win = window;
     console.log(win);
-
+    retrieve_Duration();
     os = osName();
     let ele = document.getElementById("calendar");
     let opts = { abbrYear: false, onDayClick: dayClick };
@@ -140,13 +186,15 @@
   <div class="row mb-4">
     <div class="col-12">
       <span>
-        {#if new Date().getMonth() == thrift.month}
+        {#if thrift.status == 1}
           <small class="fg-green">ongoing</small>
-        {:else}
+        {:else if thrift.status == 3 || thrift.status == 2}
           <small class="fg-red">finished</small>
+        {:else}
+          <small class="fg-blue">pending</small>
         {/if}
       </span>
-      {#if new Date().getMonth() == thrift.month}
+      {#if thrift.status == 1}
         <span>
           {#if os == Eos.IOS || os == Eos.MAC}
             <button
@@ -179,16 +227,47 @@
             </div>
             <div class="col-9">
               <p class="text-sm fg-white" style="font-family: 'Concert One';">
-                Daily Contribution Balance
+                Current Thrift Balance
               </p>
+
               <p style="font-weight: 800;" class=" fg-white  amount">
-                {thrift.wallet}
+               
+                {thrift.wallet} 
+                 <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <span on:click={reload} class="material-icons">
+                  loop
+                  </span>
+              </p>
+              <p style="font-family: 'Concert One';">
+                <small class="fg-white">Total money saved so far</small>
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+  {#if thrift.status != 3}
+  <div class="col-12">
+    {#if os == Eos.IOS || os == Eos.MAC}
+      <button on:click={endThrift} class="button bg-green fg-white ">
+        END THRIFT
+      </button>
+    {:else if os == Eos.ANDRIOD}
+      <button
+        on:click={endThrift}
+        class="button button--material bg-green fg-white  "
+      >
+        END THRIFT</button
+      >
+    {:else}
+      <button on:click={endThrift} class="button bg-green fg-white">
+        END THRIFT</button
+      >
+    {/if}
+  </div>
+  {/if}
   </div>
 
   <div id="calendar" />
@@ -209,9 +288,9 @@
         {/if}
         <span class="label">₦{transcation.amountPaid}</span>
         <span class="second-label"> Day: {i + 1}</span>
-        {#if transcation.resolved == 1}
+        {#if transcation.resolved == 3}
           <span class="second-action mif-checkmark fg-green" />
-        {:else if transcation.resolved == 0}
+        {:else if transcation.resolved == 1}
           <span class="second-action mif-pause fg-blue" />
         {:else}
           <span class="second-action mif-cancel fg-red" />
@@ -233,9 +312,9 @@
         bind:value={payAmount}
         type="number"
         data-role="spinner"
-        data-min-value={thrift.thrift_amount}
+        data-min-value=1000
         data-max-value="1000000"
-        data-step={thrift.thrift_amount}
+        data-step=100
         data-fixed="0"
       />
 
@@ -250,7 +329,7 @@
 
 <style>
   .daily {
-    background-color: rgba(197, 133, 36, 0.906);
+    background-color: rgba(111, 222, 105, 0.906);
     background-image: url(/images/dashboard/bg-1.png);
     background-repeat: no-repeat;
     background-size: cover;

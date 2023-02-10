@@ -55,7 +55,36 @@
           <p class="title">Targeted Thrift</p>
           <p><small>save every day with us</small></p>
 
-          <p><a href="/savings/daily">tap to view</a></p>
+          <p><a href="/savings/targetted">tap to view</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6">
+      <div class="card">
+        <div class="card__content mt-4 ml-2 mr-2 text-center">
+          <div>
+            <span class="material-icons icon fg-blue"> lock </span>
+          </div>
+          <p class="title">Fixed Thrift</p>
+          <p><small>Earn 15% interest on your savings</small></p>
+
+          <p><a href="/savings/fixed">tap to view</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6">
+      <div class="card">
+        <div class="card__content mt-4 ml-2 mr-2 text-center">
+          <div>
+            <span class="material-icons icon fg-red">
+              currency_exchange
+               </span>
+          </div>
+          <p class="title">Safe-super contribution</p>
+          <p><small>Contribute over a giving time and carry</small></p>
+
+          <p><a href="/savings/contribution">tap to view</a></p>
         </div>
       </div>
     </div>

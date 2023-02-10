@@ -41,3 +41,9 @@
   
     <div class="toolbar__center">{name}</div>
   </div>
+
+  <style>
+    .toolbar__center {
+      font-family: "Concert One", cursive;
+    }
+  </style>
