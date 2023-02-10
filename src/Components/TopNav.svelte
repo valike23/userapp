@@ -1,11 +1,14 @@
 <script>
-  import { on } from "events";
+  
   import { onMount } from "svelte";
   import { getOS } from "../properties/client";
 
 
     export let name = "";
     let os ='';
+    const goback =()=>{
+      history.back();
+    }
     onMount(()=>{
        os = getOS();
 
@@ -18,15 +21,18 @@
     <div class="toolbar__left">
       <span class="toolbar-button">
       {#if os == 'Linux' || os.includes('Window')}
-      <span class="material-icons">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <span on:click={goback} class="material-icons">
         arrow_back
         </span>
       {:else if  os == 'iPhone' || os == 'Macintosh'}
-      <span class="material-icons">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <span on:click={goback} class="material-icons">
         arrow_back_ios
         </span>
       {:else}
-      <span class="material-icons">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <span on:click={goback} class="material-icons">
         arrow_back
         </span>
       {/if}
@@ -35,3 +41,9 @@
   
     <div class="toolbar__center">{name}</div>
   </div>
+
+  <style>
+    .toolbar__center {
+      font-family: "Concert One", cursive;
+    }
+  </style>

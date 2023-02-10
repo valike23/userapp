@@ -1,178 +1,134 @@
 <script lang="ts">
-    let screen = "users";
+  import axios from "axios";
+  import type { Iuser } from "../../Model/accounts";
+  import { handleNotification } from "../../properties/client";
+  import {goto} from "@sapper/app";
+let user:Iuser = {};
+let confirm ='';
+let loading = true;
+  const submit = async () => {
+    if(confirm != user.password) return handleNotification('your password must match your confirm password',
+      window, 'error','error');
+    const splitAry = user.full_name.split(" ");
+      if(splitAry.length != 2)  return handleNotification('your full name should have both your first name and lastname only',
+      window, 'error','error');
+      user.first_name = splitAry[0];
+      user.last_name = splitAry[1];
+      loading = false;
+      try {
+       const resp = await axios.post('api/accounts', user);
+       if(resp){
+        console.log(resp);
+        handleNotification('accounts have been created successfully, check your mail to complete registration',
+        window,'success','ok');
+        goto("accounts/confirm_email?email=" +  user.email);
+        loading = true;
+        user ={};
+        confirm = '';
+       }
+      } catch (error) {
+        handleNotification('email or phone already exist', window, 'error', 'error');
+        loading = true;
+        
+      }
+  };
+
+
 </script>
 
 <svelte:head>
-    <title>SafeSave :: Register Page</title>
+  <title>SafeSave :: Register Page</title>
 </svelte:head>
 
-<div class="row">
-    <div class="col d-none d-block-md image pt-5">
-        <div class="mt-5 pt-5 pl-4">
-            <h2 style="margin-top:40px" class="mt-4">Save Invest and Earn</h2>
+<main>
+  <div class="login-page">
+    <div class="form">
+      <form on:submit|preventDefault={submit} class="register-form">
+        <div class="text-center">
+          <img src="images/safesave-logo/cover.png" alt="">
         </div>
+        <input bind:value={user.full_name} minlength="8" required type="text" placeholder="full name"/>
+        <input bind:value={user.email} required type="email" placeholder="email address"/>
+        <input bind:value={user.phone} required type="tel" placeholder="phone number"/>
+        
+        <input bind:value={user.password} required type="password" placeholder="password"/>
+        <input bind:value={confirm} required type="password" placeholder="confirm password"/>
+       {#if loading}
+       <button type="submit">create</button>
+       {:else}
+       <button disabled type="submit">creating...</button>
+       {/if}
+        <p class="message">Already registered? <a href="accounts/login">Sign In</a></p>
+      </form>
+     
     </div>
-    <div class="col">
-        <div class="container">
-            <div class="top">
-                <img src="images/safe.png" class="logo" alt="" srcset="" />
-                <h3>Register your new account</h3>
-            </div>
-            <div class="row text-center">
-                <div class="col-4">
-                    <span
-                        class:active={screen == "users"}
-                        class:success={screen != "users"}
-                        class="mif-user icon"
-                    />
-                    <br /> user information
-                </div>
-                <div class="col-4">
-                    <span
-                        class:inactive={screen == "users"}
-                        class:active={screen == "banking"}
-                        class:success={screen == "activate"}
-                        class="mif-money icon"
-                    /><br /> banking details
-                </div>
-                <div class="col-4">
-                    <span
-                        class:inactive={screen != "activate"}
-                        class:active={screen == "activate"}
-                        class="mif-lock icon"
-                    /> <br /> Account Activation
-                </div>
-            </div>
+  </div>
+</main>
 
-            {#if screen == "users"}
-                <div class="mt-5 pt-4 pl-5 pr-5 scroll-y">
-                    <form class=" mt-4">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input
-                                required
-                                id="name"
-                                placeholder="name should be the same as bank account"
-                                type="text"
-                                class="metro-input"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Email</label>
-                            <input
-                                required
-                                id="email"
-                                placeholder="email@email.com"
-                                type="email"
-                                class="metro-input"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Phone</label>
-                            <input
-                                required
-                                id="phone"
-                                placeholder="tel: 080xxxxxxxxx"
-                                type="phone"
-                                class="metro-input"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="year">Date of Birth</label>
-                            <input
-                                required
-                                id="date"
-                                type="date"
-                                class="metro-input"
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="country">Country</label>
-                            <select data-role="select" title="">
-                                <optgroup label="Africa">
-                                    <option selected value="NG" data-template="<img style='width:20px; margin-right:5px;' src='images/flags/nigeria.png' /> $1">Nigeria</option>
-                                    <option value="GH" data-template="<img style='width:20px; margin-right:5px;' src='images/flags/ghana.png' /> $1">Ghana</option>
-                                    <option value="ZA" data-template="<img style='width:20px; margin-right:5px;' src='images/flags/south-africa.png' /> $1">South Africa</option>
-                                    
-                                </optgroup>
-                                <optgroup label="Others">
-                                    
-                                    <option value="UK" data-template="<img style='width:20px; margin-right:5px;' src='images/flags/united-kingdom.png' /> $1">United Kingdom</option>
-                                    <option value="US" data-template="<img style='width:20px; margin-right:5px;' src='images/flags/united-states.png' /> $1">United States</option>
-                                    <option value="CA" data-template="<img style='width:20px; margin-right:5px;' src='images/flags/canada.png' /> $1">Canada</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input
-                            placeholder="*********"
-                                required
-                                minlength="8"
-                                id="password"
-                                type="password"
-                                class="metro-input"
-                            />
-                        </div>
-                        <div class="mt-3">
-                            <button type="submit" class="button primary">submit</button>
-                        </div>
-                    </form>
-                </div>
-            {:else if screen == "banking"}
-                <!-- else if content here -->
-            {:else}
-                <!-- else content here -->
-            {/if}
-        </div>
-    </div>
-</div>
 
-<style>
-    .scroll-y {
-        overflow-y: auto;
-        margin-bottom: 20px;
-    }
-    input {
-        padding-left: 10px;
-    }
-    .image {
-        background-image: url("images/market_woman.jpg");
-        height: 100vh;
-        background-size: cover;
-    }
-    h2 {
-        color: white;
-        font-family: "Manrope", sans-serif;
-        font-weight: 600;
-    }
-    .top {
-        text-align: center;
-        margin-top: 4rem;
-    }
-    
-    .logo {
-        height: 60px;
-    }
-    h3 {
-        font-weight: 500;
-        color: rgb(68, 172, 233);
-    }
-    .icon {
-        font-size: x-large;
-        border-radius: 50%;
-        padding: 10px;
-    }
-    .inactive {
-        background-color: gray;
-        color: white;
-    }
-    .active {
-        background-color: blue;
-        color: white;
-    }
-    .success {
-        background-color: green;
-        color: white;
-    }
-</style>
+
+  <style>
+  main{
+    background-image: url('images/piggy.jpeg');
+    height: 100vh;
+    background-size:cover;
+    background-position: center;
+  background-repeat: no-repeat;
+    background-repeat: none;
+  }
+.login-page {
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.form {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.form input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.form button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.form button:hover,.form button:active,.form button:focus {
+  background: #43A047;
+}
+.form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+.form .message a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+
+
+  </style>
