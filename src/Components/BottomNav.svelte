@@ -8,6 +8,7 @@ import {goto} from "@sapper/app";
   const nav =(mypage: Epage)=>{
     if(mypage == Epage.CONTRIBUTION) goto('/savings');
     if(mypage == Epage.HOME) goto('/');
+    if(mypage == Epage.WALLET) goto('/wallet')
   }
 let os = '';
   onMount(()=>{
@@ -41,8 +42,8 @@ console.log(os);
     </button>
   </label>
 
-  <label class="tabbar__item">
-    <input type="radio" name="tabbar-a" checked="{page == Epage.INVESTMENT}">
+  <label class="tabbar__item" on:click={()=>{nav(Epage.WALLET)}} on:keydown={()=>{nav(Epage.WALLET)}}>
+    <input type="radio" name="tabbar-a" checked="{page == Epage.WALLET}">
     <button class="tabbar__button">
       <i class="tabbar__icon ">
         <span class="material-icons">
@@ -76,11 +77,11 @@ console.log(os);
     </button>
   </label>
 
-  <label class="tabbar__item tabbar--material__item">
-    <input type="radio" name="tabbar-material-c">
+  <label class="tabbar__item tabbar--material__item" on:click={()=>{nav(Epage.WALLET)}} on:keydown={()=>{nav(Epage.WALLET)}}>
+    <input type="radio" name="tabbar-material-c" checked="{page == Epage.WALLET}">
     <button class="tabbar__button tabbar--material__button">
       <span  class="material-icons tabbar__icon tabbar--material__icon fg-white">
-        paid
+        wallet
         </span>
       <div class="tabbar__label tabbar--material__label fg-white">wallet</div>
     </button>

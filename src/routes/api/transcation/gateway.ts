@@ -1,4 +1,5 @@
 
+import axios from "axios";
 import superagent from "superagent";
 import { BASE_URL } from "../../../Model/public";
 
@@ -61,5 +62,20 @@ export async function post (req, res){
         const resd = await superagent.put(BASE_URL + "/transcation/login").send(body);
     } catch (error) {
         
+    }
+}
+
+export async function get (req, res){
+    try {
+        const app = await  axios.get(BASE_URL + "/client/transcation?page="+ req.query.page, {
+            headers: { "Authorization": `Bearer ${req.session.token}` }
+        });
+         // console.log(app);
+         let resp = app.data;
+         console.log('second degree murder',resp);
+          return res.json(resp);
+    } catch (error) {
+        console.log(error);
+        res.status(503).json(error);
     }
 }
