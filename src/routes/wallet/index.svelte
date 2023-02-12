@@ -8,7 +8,7 @@
       const res2 = await this.fetch(`api/transcation/gateway?page=1`);
 
     const res4 = await this.fetch(`api/dashboard`);
-		 client = await res.json();
+		 client = await res4.json();
       const data = await res2.json();
       gateways = data;
       if (gateways == undefined) gateways = [];
@@ -129,7 +129,7 @@
   };
   onMount(() => {
     win = window;
-    console.log(client);
+    console.log('the clients are here: ',client);
   });
 </script>
 
@@ -142,7 +142,7 @@
   <div class="card bg-primary fg-white">
     <div class="card__content">
       <p class="text-center fg-white">Available Balance</p>
-      <h3 class="text-center fg-white">₦{client.wallet}</h3>
+      <h3 class="text-center fg-white">₦{client.client.wallet}</h3>
     </div>
   </div>
 
