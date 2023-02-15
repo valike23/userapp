@@ -36,6 +36,10 @@ try {
  const verifyEmail =()=>{
 
  }
+ const openBills =()=>{
+  goto("bill/payment");
+  
+ }
   const logout = () => {
     goto("accounts/login");
   };
@@ -220,7 +224,7 @@ try {
         </div>
       </div>
       <div class="col-6 col-md-3">
-        <div class="card bg-green fg-white">
+        <div on:click={openBills} class="card bg-green fg-white">
           <span class="material-icons"> phone </span> <br />
           <p><strong>Data & Airtime</strong></p>
         </div>

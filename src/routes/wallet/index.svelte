@@ -29,7 +29,6 @@
   import BottomNav from "../../Components/BottomNav.svelte";
   import TopNav from "../../Components/TopNav.svelte";
   import { goto } from "@sapper/app";
-  import moment from "moment";
   import { handleNotification } from "../../properties/client";
   import {
     Egateway,
@@ -45,11 +44,7 @@
   const name = "wallet";
   const page = Epage.WALLET;
 
-  try {
-    if (mysession.status == "failed") goto("accounts/login");
-  } catch (error) {
-    console.log(error);
-  }
+ 
 
   const pay = (amount: number) => {
     const paystack = new win.PaystackPop();
@@ -128,6 +123,11 @@
     }
   };
   onMount(() => {
+    try {
+    if (mysession.status == "failed") goto("accounts/login");
+  } catch (error) {
+    console.log(error);
+  }
     win = window;
     console.log('the clients are here: ',client);
   });
@@ -172,7 +172,7 @@
               </p>
               <p>
                 <small
-                  >{moment(gateway.createdAt, "YYYY-MM-DD HH:mm").format(
+                  >{win.moment(gateway.createdAt, "YYYY-MM-DD HH:mm").format(
                     "YYYY-MM-DD HH:mm"
                   )}</small
                 > <small class="float-right" />
@@ -192,7 +192,7 @@
               </p>
               <p>
                 <small
-                  >{moment(gateway.createdAt, "YYYY-MM-DD HH:mm").format(
+                  >{win.moment(gateway.createdAt, "YYYY-MM-DD HH:mm").format(
                     "YYYY-MM-DD HH:mm"
                   )}</small
                 >
