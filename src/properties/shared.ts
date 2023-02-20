@@ -1,7 +1,7 @@
 export enum Epage {
     HOME = 'home',
     CONTRIBUTION = 'contribution',
-    INVESTMENT = 'investment'
+    WALLET = 'wallet'
 }
 export enum Egateway {
     PAYSTACK = 'paystack',
@@ -15,7 +15,8 @@ export enum EtranscationStatus {
 }
 export enum EgatewayType {
     ADD_CARD = 'add card',
-    THRIFT_PAYMENT = 'thrift payment'
+    THRIFT_PAYMENT = 'thrift payment',
+    DEPOSIT= 'deposit'
 }
 export interface IgatewayTranscation {
     _id?: any;
