@@ -81,7 +81,7 @@
               currency_exchange
                </span>
           </div>
-          <p class="title">Safe-super contribution</p>
+          <p class="title">Super-Save Contribution</p>
           <p><small>Contribute over a giving time and carry</small></p>
 
           <p><a href="/savings/contribution">tap to view</a></p>

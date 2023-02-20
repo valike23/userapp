@@ -2,23 +2,30 @@
 	export async function preload(page, session) {
 	let mysession ={};
   let contribution = {clients: []};
+  let transcations =[];
 try {
   
   const res = await this.fetch(`api/accounts`);
   const res2 = await this.fetch(`api/thrift/contribution?id=${page.query.id}`);
+  const res3 = await this.fetch(`api/transcation/contributions?id=${page.query.id}`);
 
   const data = await res2.json();
+  const data2 = await res3.json();
+
   contribution = data;
+  transcations = data2;
+  if(transcations == undefined) transcations = [];
   if(contribution == undefined) contribution = {clients: []};
   if(!contribution.clients) contribution = {clients: []};
 		 mysession = await res.json();
 } catch (error) {
   console.log(error);
   mysession ={};
+  transcations = [];
   contribution = {clients: []};
 }
 
-		return { mysession , contribution};
+		return { mysession , contribution, transcations};
 	}
 </script>
 
@@ -35,7 +42,8 @@ const page = Epage.CONTRIBUTION;
 const name = 'contrubution details';
 let win: any = {};
 let payCharm: any = {};
-export let mysession: any ={}, contribution : any= {clients: []};
+export let mysession: any ={}, contribution : any= {clients: []}, transcations = [];
+if(!Array.isArray(transcations)) transcations = [];
 let payAmount = contribution.amount/ contribution.clients;
 console.log('contributions', contribution)
 try {
@@ -44,7 +52,14 @@ try {
     console.log(error);
   }
   const openModal = async () => {
-   const data = await  win.ons.notification.prompt("enter amount in NGN");
+   const data = await  win.ons.notification.prompt({
+      inputType: "number",
+      title: "Pay",
+      messageHTML: `<p> Enter the amount you want to pay to  your contribution. Remember you have a monthly obligation to fulfil, minimum amount ₦1,000</p>`,
+      defaultValue: 1000,
+      buttonLabels: ["TopUp", "close"],
+      primaryButtonIndex: 0,
+    });
    console.log('result', data);
    if(!data) return win.ons.notification.alert("you need to enter a value");
    if(isNaN(data)) return win.ons.notification.alert("you need to enter a number");
@@ -53,7 +68,6 @@ try {
   };
 
 const pay = () => {
-    let data = document.getElementById("payAmount");
     
     console.log("agression", payAmount);
     win.Metro.charms.close("#pay");
@@ -157,37 +171,31 @@ const pay = () => {
       </ul>
 
  <div class="mt-3"> <h3>Transcations</h3></div>
-
- <table class="table striped row-hover">
+<div class="table-responsive">
+  <table class="table striped row-hover table-responsive" style="overflow-x:auto">
     <thead>
     <tr>
         <th>#</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th >Username</th>
+        <th>Amount</th>
+        <th>Resolved</th>
+        <th >Date</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>1</td>
-        <td>Bill</td>
-        <td>Gates</td>
-        <td>@billy</td>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>Steve</td>
-        <td>Jobs</td>
-        <td>@stevy</td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>Larry</td>
-        <td>Page</td>
-        <td>@larry</td>
-    </tr>
+{#each transcations as trans}
+<tr>
+  <td>{trans.paymentRef}</td>
+  <td>{trans.amountPaid}</td>
+  <td>{trans.resolved}</td>
+  <td>{trans.createdDate}</td>
+</tr>
+{/each}
+   
     </tbody>
 </table>
+
+</div>
+
 
    
 </div>
