@@ -38,7 +38,7 @@ console.log(os);
       <i class="tabbar__icon ">
         <i class="mif-coins"></i>
       </i>
-      <div class="tabbar__label">Contributions</div>
+      <div class="tabbar__label">Thrifts</div>
     </button>
   </label>
 

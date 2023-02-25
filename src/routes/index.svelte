@@ -34,7 +34,7 @@ try {
     screen = false;
   }
  const verifyEmail =()=>{
-
+  goto('accounts/confirm_email?email=' + client.email);
  }
  const openBills =()=>{
   goto("bill/payment");
@@ -63,8 +63,15 @@ try {
   });
 
   const testAlert = () => {
-    win.ons.notification.alert("This dialog was created with ons.notification");
+    win.ons.notification.alert("Coming soon");
   };
+
+  const startThrift =()=>{
+    goto('savings');
+  }
+  const startInvestment =()=>{
+    goto('savings/fixed');
+  }
   const debitCardModal = async () => {
     let res = await win.ons.notification.confirm(
       "Note: A fee of ₦50 will be charged from your card. Ensure the card is yours"
@@ -212,18 +219,21 @@ try {
     <h2 class="title"><strong>quick action</strong></h2>
     <div class="row">
       <div class="col-6 col-md-3">
-        <div class="card fg-white bg-red">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <div on:click={startThrift} class="card fg-white bg-red">
           <span class="material-icons"> savings </span><br />
           <p><strong>Start Thrift</strong></p>
         </div>
       </div>
-      <div class="col-6 col-md-3">
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <div on:click={startInvestment}  class="col-6 col-md-3">
         <div class="card fg-white bg-blue">
           <span class="material-icons "> monetization_on </span> <br />
           <p><strong>Investment</strong></p>
         </div>
       </div>
       <div class="col-6 col-md-3">
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div on:click={openBills} class="card bg-green fg-white">
           <span class="material-icons"> phone </span> <br />
           <p><strong>Data & Airtime</strong></p>
@@ -239,27 +249,14 @@ try {
     </div>
   </section>
   <section id="referral">
-    <div class="card bg-green">
-      <div class="card_content" />
+    <div class="card bg-green referal">
+      <div class="card_content " ><p class="fg-white " style="font-size:15px">referral and win</p></div>
     </div>
   </section>
 
-  <section id="task" class="mt-3">
+  <section id="task" class="mt-3 mb-5 pb-5">
     <h2 class="title"><strong>To Do list</strong></h2>
-    <div class="card">
-      <div
-        on:click={debitCardModal}
-        on:keypress={debitCardModal}
-        class="card_content row"
-      >
-        <div class="col-2">
-          <span class="material-icons"> radio_button_unchecked </span>
-        </div>
-        <div class="col-10">
-          <strong class="mb-3 mr-2">add debit card</strong>
-        </div>
-      </div>
-    </div>
+  
    {#if !client.email_verified}
    <div class="card">
     <div
@@ -282,6 +279,15 @@ try {
 <BottomNav {page} />
 
 <style>
+  .card_content{
+    font-family: "Concert One", cursive;
+  }
+  .referal {
+  background-image: url('images/coins.svg');
+  background-position: right;
+  background-size: 80px;
+  background-repeat: no-repeat;
+}
   .title {
     font-size: 0.825rem;
     font-weight: 600;

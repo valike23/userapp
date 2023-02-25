@@ -26,3 +26,18 @@ export async function post(req, res){
         res.status(503).json(error);
     }
 }
+
+
+//===================== resend OTP  =============================//
+
+export async function put(req, res) {
+    try {
+        const app = await axios.get(BASE_URL +  `/open/resentOTP?email=${req.body.email}`);
+        console.log(app.data);
+        let resp = app.data;
+       res.json(resp);
+    } catch (error) {
+          console.log(error);
+        res.status(503).json(error);
+    }
+}

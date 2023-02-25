@@ -1,6 +1,7 @@
 <script context="module">
   export async function preload(page, session) {
     let mysession = {};
+    let {id} = page.query;
     let thrift = { transcations: [] };
     try {
       const res = await this.fetch(`api/accounts`);
@@ -18,7 +19,7 @@
       thrift = { transcations: [] };
     }
 
-    return { mysession, thrift };
+    return { mysession, thrift,id };
   }
 </script>
 
@@ -43,7 +44,7 @@
   let pay_amount = 0;
   let cal: any = {};
   let os: Eos | string = "";
-  export let thrift, mysession;
+  export let thrift, mysession, id;
   console.log(mysession);
   try {
     if (mysession.status == "failed") goto("accounts/login");
@@ -51,6 +52,33 @@
     console.log(error);
   }
   let payAmount = thrift.thrift_amount;
+
+  const reload =async ()=>{
+    handleNotification('reloading data... ', win, 'info','loading...');
+    const resp = await axios.put(`api/thrift/daily?id=${id}`);
+    console.log(resp.data);
+    const data = resp.data;
+    if(data.body){
+      thrift = data.body;
+      thrift.transcations = thrift.transcations;
+
+      handleNotification('data reloaded!', win, 'success', 'ok');
+
+      let ele = document.getElementById("calendar");
+    let events = [];
+    thrift.transcations.forEach((element, i) => {
+      let event: any = {};
+      event.desc  = 'thrift payment',
+      event.date = new Date((new Date()).getFullYear(),thrift.month, i + 1);
+      events.push(event);
+    });
+    console.log('event here:',events);
+    console.log('thrift details', thrift);
+    let opts = { abbrYear: false, onDayClick: dayClick, events , month: Number(thrift.month)   + 1};
+     new win.calendar(ele, opts);
+    }
+
+  }
   const pay = () => {
     let data = document.getElementById("payAmount");
     const input = win.Metro.getPlugin(data, "spinner");
@@ -129,8 +157,17 @@
 
     os = osName();
     let ele = document.getElementById("calendar");
-    let opts = { abbrYear: false, onDayClick: dayClick };
-    cal = new win.calendar(ele, opts);
+    let events = [];
+    thrift.transcations.forEach((element, i) => {
+      let event: any = {};
+      event.desc  = 'thrift payment',
+      event.date = new Date((new Date()).getFullYear(),thrift.month, i + 1);
+      events.push(event);
+    });
+    console.log('event here:',events);
+    console.log('thrift details', thrift);
+    let opts = { abbrYear: false, onDayClick: dayClick, events , month: Number(thrift.month)   + 1};
+     new win.calendar(ele, opts);
   });
 </script>
 
@@ -182,8 +219,14 @@
                 Daily Contribution Balance
               </p>
               <p style="font-weight: 800;" class=" fg-white  amount">
-                {thrift.wallet}
+                {(thrift.wallet - thrift.thrift_amount)? thrift.wallet - thrift.thrift_amount : 0 }
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <span on:click={reload} class="material-icons">
+                  loop
+                  </span>
               </p>
+              <p class="fg-white"><small>ledger wallet: {thrift.wallet}</small></p>
             </div>
           </div>
         </div>
